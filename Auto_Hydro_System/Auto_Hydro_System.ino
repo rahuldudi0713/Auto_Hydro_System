@@ -1,5 +1,5 @@
 // Code Presented and build by Hacki Tech
-//Project Name :- Auto_Hydro_System
+//Project Name :- Auto_Hydro_System_1.0
 //Developer :-    Rahul Dudi
 //Presentation Video :- YT- Epic Life Shots
 //Cyber Sec Channel  :- YT- Hacki Tech
@@ -9,33 +9,26 @@
 
 // Important libraries
 //Change Template ID and Template Name according to your Blynk Template
-#define BLYNK_TEMPLATE_ID "TMPL333bI2gjl"           
-#define BLYNK_TEMPLATE_NAME "AutoHydroSystem"
+#define BLYNK_TEMPLATE_ID "TMPLATE ID"           
+#define BLYNK_TEMPLATE_NAME "TEMPLATE NAME"
 #define BLYNK_PRINT Serial
 #include <BlynkSimpleEsp32.h>            //Esp32 Library
 #include <WiFiClient.h>                  //Library To connect with wifi
-#include <ESP32Servo.h>                  //Servo Moter Library
 #include <LiquidCrystal_I2C.h>
 #include <WiFi.h>
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-char auth[] = "BcHtX75qrCXVaVLcHhR0SJuZ9yTIcThz";  //Enter your Blynk Auth token
-char ssid[] = "Hacki_Tech";                        //Enter your WIFI SSID
-char pass[] = "hackitech";                         //Enter your WIFI Password
+char auth[] = "BLYNK AUTH TOKEN";  //Enter your Blynk Auth token
+char ssid[] = "SSID";                        //Enter your WIFI SSID
+char pass[] = "PASSWORD";                         //Enter your WIFI Password
 
 // LCD PINS
 // SDA PIN = 21
 // SCL PIN = 22
-int DimLight  = 12;                                 //Out side Dim lights
-int FullLight = 14;                                //All lights glow
-
 int Red   = 16;
 int Green  = 4;
 
-
-#define Servo1 27                                    //Pin Defined for Servo Moter
-#define light 35
 #define soil 34                                      //Pin-34 Soil Moisture Sensor
 #define RELAY_PIN_1       17                         //16 Relay
 #define RELAY_PIN_2       5                          //17 Relay
@@ -54,7 +47,7 @@ Servo servo;
 int toggleState_1 = 1;                               //Define integer to rember the toggle state for relay 1
 int toggleState_2 = 1;                               //Define integer to rember the toggle state for relay 2
 int toggleState_3 = 1;                               //Define integer to rember the toggle state for relay 3
-int toggleState_4 = 1;                               //Define integer to rember the toggle state for relay 3
+int toggleState_4 = 1;                               //Define integer to rember the toggle state for relay 4
 
 
 int wifiFlag = 0;
@@ -189,11 +182,7 @@ void setup() {
   lcd.setCursor(0, 0);  
   lcd.print("   Auto-Hydro");
 
-  servo.attach(Servo1);
-  servo.write(0);
   pinMode(wifiLed, OUTPUT);
-  pinMode(DimLight,OUTPUT);
-  pinMode(FullLight,OUTPUT);
   pinMode(Red,OUTPUT);
   pinMode(Green,OUTPUT);
   pinMode(RELAY_PIN_1, OUTPUT);
@@ -213,7 +202,6 @@ void setup() {
 
   timer.setInterval(3000L, checkBlynkStatus);
   timer.setInterval(500L, soilMoistureSensor);
-  timer.setInterval(500L, ldr);
   
 }
 
@@ -238,35 +226,6 @@ void soilMoistureSensor() {
     digitalWrite(Red, HIGH);
     digitalWrite(Green, LOW);
 
-  }
-}
-
-void ldr() {
-  int valueldr = analogRead(light);
-  int ldrvalue = map(valueldr, 4095, 0, 0, 100);
-  lcd.setCursor(7, 1);  
-  lcd.print("Light ");        
-  lcd.setCursor(13, 1);  
-  lcd.print(ldrvalue);  
-  Serial.print("  Mapped Value: ");
-  Serial.println(ldrvalue);
-  Blynk.virtualWrite(V3, ldrvalue);
-  if(ldrvalue > 55){
-    servo.write(0);                                   //Change angel according your servo moter adjustment
-    digitalWrite(DimLight, LOW);
-    digitalWrite(FullLight, LOW);
-
-  }
-  else if (ldrvalue > 40 && ldrvalue < 55){
-    digitalWrite(DimLight, HIGH);
-    digitalWrite(FullLight, LOW);
-    servo.write(40);
-
-  }
-  else if (ldrvalue < 40){
-    digitalWrite(DimLight, HIGH);
-    digitalWrite(FullLight, HIGH);
-    servo.write(180);
   }
 }
 
